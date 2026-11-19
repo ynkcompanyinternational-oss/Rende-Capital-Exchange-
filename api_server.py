@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import time
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs
 from urllib.request import Request, urlopen
@@ -98,6 +99,7 @@ class Handler(SimpleHTTPRequestHandler):
             }
 
             for name, params in requests.items():
+                time.sleep(0.4)
                 params.update({"chainid": "1", "apikey": key})
                 query = "&".join(
                     f"{k}={__import__('urllib.parse').parse.quote(str(v))}"
