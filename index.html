@@ -1521,9 +1521,28 @@ async function atualizarCarteira() {
   try {
     el("carteira-status-texto").textContent = "CONSULTANDO ETHEREUM...";
 
-    const resposta = await fetch("http://127.0.0.1:8082/api/portfolio", {
-      cache: "no-store"
-    });
+    const provider = window.ethereum;
+    if (!provider || typeof provider.request !== "function") {
+      throw new Error("Carteira não encontrada neste navegador.");
+    }
+
+    const contas = await provider.request({ method: "eth_accounts" });
+    const enderecoCarteira = Array.isArray(contas) ? contas[0] : "";
+
+    if (!/^0x[a-fA-F0-9]{40}$/.test(enderecoCarteira || "")) {
+      throw new Error("Nenhuma carteira previamente autorizada foi encontrada.");
+    }
+
+    const rede = await provider.request({ method: "eth_chainId" });
+    if (rede !== "0x1") {
+      throw new Error("Selecione Ethereum Mainnet na carteira.");
+    }
+
+    const resposta = await fetch(
+      "https://rende-capital-exchange-1.onrender.com/api/portfolio?address=" +
+      encodeURIComponent(enderecoCarteira),
+      { cache: "no-store" }
+    );
 
     const dados = await resposta.json();
 

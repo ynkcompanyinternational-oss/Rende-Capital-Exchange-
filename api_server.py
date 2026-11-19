@@ -1,13 +1,13 @@
 import json
 import os
+import re
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
 from urllib.request import Request, urlopen
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 
 ROOT = Path(__file__).resolve().parent
 ENV_FILE = Path.home() / ".config" / "rende-capital" / ".env"
-ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
 API_URL = "https://api.etherscan.io/v2/api"
 
 def load_api_key():
@@ -44,6 +44,11 @@ class Handler(SimpleHTTPRequestHandler):
         if urlparse(self.path).path != "/api/portfolio":
             return super().do_GET()
 
+        address = parse_qs(urlparse(self.path).query).get("address", [""])[0].strip()
+        if not re.fullmatch(r"0x[a-fA-F0-9]{40}", address):
+            self.send_json({"ok": False, "error": "Endereço de carteira inválido."}, 400)
+            return
+
         try:
             key = load_api_key()
             results = {}
@@ -52,13 +57,13 @@ class Handler(SimpleHTTPRequestHandler):
                 "balance": {
                     "module": "account",
                     "action": "balance",
-                    "address": ADDRESS,
+                    "address": address,
                     "tag": "latest"
                 },
                 "transactions": {
                     "module": "account",
                     "action": "txlist",
-                    "address": ADDRESS,
+                    "address": address,
                     "startblock": "0",
                     "endblock": "99999999",
                     "page": "1",
@@ -68,7 +73,7 @@ class Handler(SimpleHTTPRequestHandler):
                 "token_transfers": {
                     "module": "account",
                     "action": "tokentx",
-                    "address": ADDRESS,
+                    "address": address,
                     "startblock": "0",
                     "endblock": "99999999",
                     "page": "1",
@@ -81,14 +86,14 @@ class Handler(SimpleHTTPRequestHandler):
                 "module": "account",
                 "action": "tokenbalance",
                 "contractaddress": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-                "address": ADDRESS,
+                "address": address,
                 "tag": "latest"
             }
             requests["usdt_balance"] = {
                 "module": "account",
                 "action": "tokenbalance",
                 "contractaddress": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
-                "address": ADDRESS,
+                "address": address,
                 "tag": "latest"
             }
 
@@ -117,7 +122,7 @@ class Handler(SimpleHTTPRequestHandler):
 
             self.send_json({
                 "ok": True,
-                "address": ADDRESS,
+                "address": address,
                 "network": "Ethereum Mainnet",
                 "data": results
             })
