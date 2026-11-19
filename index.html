@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #080808;
+  font-family: Georgia, serif;
+}
+
+.tela {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#inicio {
+  background-image: url("assets/inicio.png");
+  background-size: 96% 96%;
+  background-position: center;
+  background-color: #080808;
+}
+
+#segunda {
+  display: none;
+  background-image: url("assets/segunda-tela.png");
+}
+
+.menu-botao {
+  position: absolute;
+  top: 72%;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  width: 52px;
+  height: 45px;
+  border: 0;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  z-index: 5;
+}
+
+.menu-botao span {
+  width: 29.4px;
+  height: 3.15px;
+  border-radius: 5px;
+  background: linear-gradient(
+    105deg,
+    #4b1908 0%,
+    #87300d 12%,
+    #c9571c 27%,
+    #f58a3b 43%,
+    #ffb36a 50%,
+    #d96a27 64%,
+    #96390f 82%,
+    #3e1508 100%
+  );
+  border-top: 1px solid rgba(255, 183, 112, 0.8);
+  border-bottom: 1px solid #401507;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 210, 160, 0.65),
+    inset 0 -1px 1px rgba(45, 12, 3, 0.9);
+}
+
+.voltar {
+  position: absolute;
+  top: 42px;
+  left: 18px;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f08a43;
+  font-size: 34px;
+  line-height: 1;
+  background: rgba(5, 5, 5, 0.82);
+  border: 1px solid #9b4921;
+  border-radius: 11px;
+  box-shadow:
+    inset 0 1px 2px rgba(255, 190, 125, 0.18),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 1px 1px #351306;
+  z-index: 5;
+}
+
+.botoes {
+  position: absolute;
+  top: 35%;
+  left: 7%;
+  width: 86%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 17px 12px;
+}
+
+.botao-menu {
+  min-height: 59px;
+  padding: 9px 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-family: Georgia, serif;
+  font-size: clamp(12px, 3.5vw, 16px);
+  font-weight: 900;
+  letter-spacing: .5px;
+
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  background-color: transparent !important;
+  background-image: repeating-linear-gradient(
+    100deg,
+    #57200d 0%,
+    #a94e20 16%,
+    #ffe2a0 29%,
+    #c16a32 42%,
+    #713016 56%,
+    #ffd18a 68%,
+    #8b3b18 82%,
+    #e6a05a 100%
+  ) !important;
+  background-size: .85em 100% !important;
+  background-repeat: repeat !important
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+
+  border: 2px solid transparent !important;
+  border-radius: 9px;
+  position: relative;
+  isolation: isolate;
+  box-shadow: none !important;
+  -webkit-text-stroke: .35px #f3b36d;
+  text-shadow:
+    0 1px 1px #2a0d04,
+    0 -1px 1px rgba(255,226,160,.9),
+    0 0 2px rgba(255,190,110,.95),
+    0 0 5px rgba(217,125,57,.8),
+    0 0 9px rgba(255,160,75,.4)
+  cursor: pointer;
+}
+
+.botao-menu::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  border-radius: 9px;
+  background: linear-gradient(
+    135deg,
+    #57200d 0%,
+    #d8793b 20%,
+    #ffe0a0 36%,
+    #a84c20 52%,
+    #f5b66b 70%,
+    #5b210e 86%,
+    #d8793b 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.botao-menu::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 7px;
+  background: rgba(0, 0, 0, 0.22);
+  z-index: -2;
+  pointer-events: none;
+}
+
+.botao-menu:active {
+  background-color: transparent !important;
+  transform: scale(.97);
+  box-shadow: none !important;
+}
+
+@media (max-height: 600px) {
+  .botoes {
+    top: 20%;
+    gap: 9px;
+  }
+
+  .botao-menu {
+    min-height: 45px;
+  }
+}
+
+#relogios-mundo {
+  position: absolute;
+  left: 2%;
+  bottom: 20%;
+  width: 96%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2px;
+  z-index: 4;
+}
+.relogio-cidade {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  font-family: Georgia, serif;
+}
+.relogio-nome {
+  display: block;
+  font-size: clamp(6px, 1.9vw, 9px);
+  font-weight: bold;
+  letter-spacing: .2px;
+  color: #e8e8e8;
+  text-shadow: none;
+}
+.relogio-hora {
+  display: block;
+  margin-top: 3px;
+  font-size: clamp(9px, 2.6vw, 13px);
+  font-weight: bold;
+  font-variant-numeric: tabular-nums;
+  color: #e8e8e8;
+  text-shadow: none;
+}
+
+
+/* EFEITO COBRE METÁLICO RELOGIOS */
+.relogio-cidade,
+.relogio-cidade * {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  background-image: linear-gradient(
+    100deg,
+    #57200d 0%,
+    #a94e20 17%,
+    #f58a3b 34%,
+    #ffd18a 45%,
+    #bd5722 57%,
+    #713016 74%,
+    #e99a59 88%,
+    #57200d 100%
+  ) !important;
+  background-size: 100% 100% !important;
+  background-repeat: repeat !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-stroke: 0.2px #e6a05a;
+  text-shadow: 0 1px 1px #250d04;
+}
+/* FIM DO EFEITO COBRE METÁLICO RELOGIOS */
+
+
+/* TELA DE INVESTIMENTOS */
+#investimentos {
+  display: none;
+  background-image: url("assets/fundo-investimentos.png");
+}
+
+.investimento-conteudo {
+  position: absolute;
+  top: 27%;
+  left: 8%;
+  width: 84%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+  text-align: center;
+}
+
+.investimentos-titulo {
+  font-family: Georgia, serif;
+  font-size: clamp(25px, 7vw, 36px);
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  color: transparent;
+  background-image: repeating-linear-gradient(
+    100deg,
+    #57200d 0%,
+    #a94e20 16%,
+    #ffe2a0 29%,
+    #c16a32 42%,
+    #713016 56%,
+    #ffd18a 68%,
+    #8b3b18 82%,
+    #e6a05a 100%
+  );
+  background-size: .85em 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-stroke: .4px #f3b36d;
+  text-shadow:
+    0 1px 1px #2a0d04,
+    0 -1px 1px rgba(255,226,160,.9),
+    0 0 5px rgba(217,125,57,.8);
+}
+
+.investimentos-descricao {
+  color: #e6a05a;
+  font-family: Georgia, serif;
+  font-size: clamp(14px, 4vw, 18px);
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(217,125,57,.7);
+}
+
+.carteira-link {
+  width: 100%;
+  min-height: 62px;
+  text-decoration: none;
+}
+
+
+.investimentos-texto {
+  max-width: 100%;
+  color: transparent;
+  background-image: repeating-linear-gradient(
+    100deg,
+    #57200d 0%,
+    #a94e20 16%,
+    #ffe2a0 29%,
+    #c16a32 42%,
+    #713016 56%,
+    #ffd18a 68%,
+    #8b3b18 82%,
+    #e6a05a 100%
+  );
+  background-size: .85em 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-stroke: .2px #f3b36d;
+  font-family: Georgia, serif;
+  font-size: clamp(10px, 3vw, 13px);
+  font-weight: bold;
+  line-height: 1.6;
+  text-align: center;
+  text-shadow: 0 0 4px rgba(217,125,57,.5);
+}
+
+
+/* AJUSTES PROFISSIONAIS DA TELA DE INVESTIMENTOS */
+.investimento-conteudo {
+  top: 30%;
+  bottom: 4%;
+  max-height: 66%;
+  overflow-y: auto;
+  gap: 17px;
+  padding: 0 0 18px;
+}
+
+.investimentos-titulo {
+  margin-top: 8px;
+  text-shadow:
+    0 1px 1px #2a0d04,
+    0 -1px 1px rgba(255,226,160,.45);
+}
+
+.investimentos-descricao {
+  text-shadow: none;
+}
+
+.investimentos-texto {
+  align-self: stretch;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  padding: 16px;
+  border-left: 2px solid #c78348;
+  border-radius: 4px;
+  background: rgba(0,0,0,.58);
+  color: #d9a06a;
+  font-family: Georgia, serif;
+  font-size: clamp(14px, 3.8vw, 16px);
+  font-weight: 500;
+  line-height: 1.75;
+  text-align: left;
+  text-shadow: 0 1px 1px rgba(0,0,0,.8);
+}
+
+.investimentos-texto p {
+  margin: 0 0 15px;
+  text-align: left;
+}
+
+.investimentos-texto p:last-child {
+  margin-bottom: 0;
+}
+
+
+/* FUNDO DA TELA EXCHANGE */
+#exchange {
+  display: none;
+  background-image: url("assets/fundo-investimentos.png");
+}
+
+/* FUNDO DA TELA RENDE CAPITAL COINS */
+#rcc {
+  display: none;
+  background-image: url("assets/fundo-investimentos.png");
+}
+
+.rcc-conteudo {
+  position: absolute;
+  top: 28%;
+  bottom: 4%;
+  left: 7%;
+  width: 86%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 20px;
+  box-sizing: border-box;
+}
+
+#rcc .investimentos-titulo {
+  font-size: clamp(17px, 4.8vw, 22px);
+  white-space: nowrap;
+  letter-spacing: 0;
+}
+
+.rcc-linha {
+  gap: 6px;
+  padding: 8px 0;
+}
+
+.rcc-linha span,
+.rcc-linha strong {
+  white-space: nowrap;
+}
+
+.rcc-linha strong {
+  font-size: inherit;
+}
+
+.rcc-moeda {
+  display: block;
+  width: min(65%, 245px);
+  height: auto;
+  object-fit: contain;
+  margin: 0 auto;
+  filter: drop-shadow(0 5px 12px rgba(0,0,0,.7));
+}
+
+.rcc-dados, .rcc-texto {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 16px;
+  border: 1px solid #a96b38;
+  border-radius: 7px;
+  background: rgba(0,0,0,.82);
+  color: #e5b47e;
+  font-family: Georgia, serif;
+}
+
+.rcc-linha {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(198,135,76,.35);
+  font-size: clamp(12px, 3.5vw, 15px);
+}
+
+.rcc-linha:last-child { border-bottom: 0; }
+.rcc-linha strong { text-align: right; color: #ffe0ae; }
+
+.rcc-texto {
+  font-size: clamp(14px, 3.8vw, 16px);
+  line-height: 1.75;
+  text-align: left;
+}
+
+/* FUNDO DA TELA CONTATO */
+#contato {
+  display: none;
+  background-image: url("assets/fundo-investimentos.png");
+}
+
+/* FUNDO DA TELA BLOCKCHAIN */
+#blockchain {
+  display: none;
+  background-image: url("assets/fundo-investimentos.png");
+}
+
+
+/* PAINEL CARTEIRA RENDE CAPITAL */
+#carteira {
+  display: none;
+  background-image: url("assets/fundo-investimentos.png");
+}
+
+.carteira-conteudo {
+  top: 18%;
+  bottom: 3%;
+  max-height: 79%;
+  overflow-y: auto;
+  gap: 14px;
+  padding-bottom: 20px;
+}
+
+.carteira-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #42e889;
+  font-family: Georgia, serif;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 7px rgba(66,232,137,.35);
+}
+
+.carteira-ponto {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #42e889;
+  box-shadow: 0 0 9px #42e889;
+}
+
+.carteira-painel,
+.carteira-ativos,
+.carteira-endereco {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 16px;
+  border: 1px solid rgba(199,131,72,.65);
+  border-radius: 7px;
+  background: rgba(0,0,0,.72);
+  text-align: left;
+}
+
+.carteira-legenda {
+  display: block;
+  color: #c78348;
+  font-size: 11px;
+  letter-spacing: 1.2px;
+  margin-bottom: 9px;
+}
+
+.carteira-total {
+  display: block;
+  color: #e6b77e;
+  font-size: clamp(20px, 5.5vw, 28px);
+  overflow-wrap: normal; white-space: nowrap;
+}
+
+.carteira-aviso {
+  display: block;
+  color: #b9a18b;
+  font-size: 11px;
+  line-height: 1.5;
+  margin-top: 10px;
+}
+
+.carteira-movimentos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+}
+
+.carteira-dado { white-space: nowrap; font-size: 12px;
+  color: #e6b77e;
+  font-size: 14px;
+  overflow-wrap: normal; white-space: nowrap;
+}
+
+.carteira-ativos h2 {
+  color: #d9a06a;
+  font-size: 16px;
+  margin: 0 0 14px;
+  text-align: center;
+}
+
+.carteira-tabela {
+  width: 100%;
+  color: #e6c7a8;
+  font-size: 11px;
+}
+
+.carteira-linha { font-size: 10px;
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr 1fr;
+  gap: 5px;
+  padding: 11px 0;
+  border-bottom: 1px solid rgba(199,131,72,.3);
+  overflow-wrap: normal; white-space: nowrap;
+}
+
+.carteira-linha span:nth-child(2),
+.carteira-linha span:nth-child(3) {
+  text-align: right;
+}
+
+.carteira-cabecalho {
+  color: #c78348;
+  font-weight: bold;
+}
+
+.carteira-endereco span:last-child {
+  display: block;
+  color: #d9a06a;
+  font-size: 10px;
+  overflow-wrap: normal; white-space: nowrap;
+}
+
+
+/* AJUSTES VISUAIS EXCLUSIVOS DA CARTEIRA */
+#carteira .carteira-conteudo {
+  top: 21%;
+  bottom: 3%;
+  max-height: 76%;
+  gap: 11px;
+}
+
+#carteira .investimentos-titulo {
+  font-size: clamp(25px, 7vw, 34px);
+  margin-bottom: 4px;
+}
+
+#carteira .investimentos-descricao {
+  font-size: clamp(12px, 3.5vw, 16px);
+  margin-top: 0;
+}
+
+#carteira .carteira-status {
+  display: flex;
+  align-self: center;
+  width: fit-content;
+  padding: 3px 10px;
+  border: 1px solid #42e889;
+  border-radius: 4px;
+  background: transparent;
+  color: #42e889;
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 1.2px;
+  text-shadow: none;
+  box-shadow: none;
+}
+
+#carteira .carteira-painel,
+#carteira .carteira-ativos {
+  padding: 13px;
+}
+
+
+/* VISUAL FINAL DA CARTEIRA */
+#carteira .carteira-conteudo {
+  top: 21%;
+  bottom: 3%;
+  max-height: 76%;
+  gap: 11px;
+}
+#carteira .investimentos-titulo {
+  font-size: clamp(25px, 7vw, 34px);
+}
+#carteira .investimentos-descricao {
+  font-size: clamp(12px, 3.5vw, 16px);
+}
+#carteira .carteira-status {
+  align-self: center;
+  width: fit-content;
+  padding: 3px 10px;
+  border: 1px solid #42e889;
+  border-radius: 4px;
+  background: transparent;
+  color: #42e889;
+  font: bold 10px Arial, sans-serif;
+  letter-spacing: 1px;
+  text-shadow: none;
+  box-shadow: none;
+}
+#carteira .carteira-painel,
+#carteira .carteira-ativos {
+  padding: 13px;
+}
+
+
+/* AJUSTE DE ESPAÇO DA CARTEIRA */
+#carteira .carteira-conteudo {
+  top: 28%;
+  bottom: 2%;
+  max-height: 70%;
+}
+#carteira .investimentos-titulo {
+  font-size: clamp(25px, 7vw, 34px);
+}
+#carteira .investimentos-descricao {
+  font-size: clamp(12px, 3.5vw, 16px);
+}
+#carteira .carteira-painel,
+#carteira .carteira-ativos {
+  padding: 13px;
+}
+#carteira .carteira-ativos h2 {
+  font-size: 16px;
+  margin-bottom: 14px;
+}
+#carteira .carteira-linha { font-size: 10px;
+  padding: 10px 5px;
+}
+
+
+/* PADRAO OFICIAL COBRE METALICO RENDE CAPITAL */
+#segunda h1, #segunda h2, #segunda h3,
+#segunda p, #segunda span, #segunda strong,
+#segunda a, #segunda button,
+#relogios-mundo *,
+#investimentos h1, #investimentos h2, #investimentos h3,
+#investimentos p, #investimentos span, #investimentos strong,
+#investimentos a, #investimentos button,
+#exchange h1, #exchange h2, #exchange h3,
+#exchange p, #exchange span, #exchange strong,
+#exchange a, #exchange button,
+#rcc h1, #rcc h2, #rcc h3, #rcc p,
+#rcc span, #rcc strong, #rcc a,
+#contato h1, #contato h2, #contato h3,
+#contato p, #contato span, #contato strong,
+#contato a, #contato button,
+#blockchain h1, #blockchain h2, #blockchain h3,
+#blockchain p, #blockchain span, #blockchain strong,
+#blockchain a, #blockchain button,
+#carteira h1, #carteira h2, #carteira h3,
+#carteira p, #carteira span, #carteira strong,
+#carteira a, #carteira button,
+.voltar {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  background-image: linear-gradient(
+    105deg,
+    #4b1908 0%,
+    #87300d 12%,
+    #c9571c 27%,
+    #f58a3b 43%,
+    #ffb36a 50%,
+    #d96a27 64%,
+    #96390f 82%,
+    #3e1508 100%
+  ) !important;
+  background-size: 100% 100% !important;
+  background-repeat: no-repeat !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-stroke: .25px #e6a05a;
+  text-shadow:
+    0 1px 1px #351306,
+    0 -1px 1px rgba(255, 190, 125, .65),
+    0 0 4px rgba(217, 106, 39, .35);
+}
+
+/* CONTORNOS EM COBRE METALICO */
+.investimentos-texto {
+  border-left-color: #c9571c !important;
+}
+.rcc-dados, .rcc-texto,
+.carteira-painel, .carteira-ativos, .carteira-endereco {
+  border-color: #a94e20 !important;
+}
+.rcc-linha {
+  border-bottom-color: rgba(201, 87, 28, .55) !important;
+}
+.carteira-linha {
+  border-bottom-color: rgba(201, 87, 28, .5) !important;
+}
+
+/* INDICADOR DA CARTEIRA EM COBRE */
+.carteira-ponto {
+  background: linear-gradient(
+    105deg, #87300d, #c9571c, #ffb36a, #d96a27, #4b1908
+  ) !important;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 210, 160, .7),
+    0 0 7px rgba(217, 106, 39, .65) !important;
+}
+/* FIM DO PADRAO OFICIAL COBRE METALICO */
+
+
+/* EXCECAO OFICIAL: INDICADOR ONLINE VERDE */
+#carteira .carteira-status {
+  color: #42e889 !important;
+  -webkit-text-fill-color: #42e889 !important;
+  background: transparent !important;
+  background-image: none !important;
+  border-color: #42e889 !important;
+  text-shadow: 0 0 7px rgba(66,232,137,.35) !important;
+}
+#carteira .carteira-ponto {
+  background: #42e889 !important;
+  box-shadow: 0 0 9px #42e889 !important;
+}
+/* FIM DA EXCECAO ONLINE */
+
+
+/* EXCECAO ONLINE VERDE */
+#carteira .carteira-status {
+  color: #42e889 !important;
+  -webkit-text-fill-color: #42e889 !important;
+  background: transparent !important;
+  background-image: none !important;
+  border-color: #42e889 !important;
+  text-shadow: 0 0 7px rgba(66,232,137,.35) !important;
+}
+#carteira .carteira-ponto {
+  background: #42e889 !important;
+  box-shadow: 0 0 9px #42e889 !important;
+}
+
+
+/* TEXTO ONLINE TAMBEM EM VERDE */
+#carteira .carteira-status,
+#carteira .carteira-status span {
+  color: #42e889 !important;
+  -webkit-text-fill-color: #42e889 !important;
+  background: transparent !important;
+  background-image: none !important;
+  text-shadow: 0 0 7px rgba(66,232,137,.35) !important;
+}
+
+
+/* ONLINE NO CANTO SUPERIOR DIREITO DA CAIXA DE PATRIMONIO */
+#carteira .patrimonio-painel {
+  position: relative;
+}
+#carteira .patrimonio-painel .carteira-status {
+  position: absolute;
+  top: 9px;
+  right: 12px;
+  margin: 0;
+  align-self: auto;
+}
+/* FIM DO POSICIONAMENTO ONLINE */
+
+
+/* ACABAMENTO 3D DOS BOTOES E RELOGIOS */
+
+/* BOTOES DA SEGUNDA TELA */
+#segunda .botao-menu {
+  border: 1.5px solid transparent !important;
+  border-radius: 10px !important;
+  background-color: rgba(0,0,0,.28) !important;
+  box-shadow:
+    inset 0 1px 2px rgba(255,210,160,.35),
+    inset 0 -2px 4px rgba(35,10,3,.85),
+    0 1px 2px rgba(0,0,0,.8) !important;
+}
+
+#segunda .botao-menu::before {
+  border-radius: 10px !important;
+  background: linear-gradient(
+    135deg,
+    #4b1908 0%,
+    #c9571c 22%,
+    #ffb36a 40%,
+    #f58a3b 52%,
+    #96390f 78%,
+    #3e1508 100%
+  ) !important;
+}
+
+#segunda .botao-menu::after {
+  border-radius: 8px !important;
+  background: rgba(0,0,0,.38) !important;
+}
+
+/* RELOGIOS MUNDIAIS COM FUNDO TRANSLUCIDO E BORDA METALICA */
+#relogios-mundo .relogio-cidade {
+  box-sizing: border-box;
+  border: 1.5px solid transparent !important;
+  border-radius: 9px !important;
+  background:
+    linear-gradient(rgba(0,0,0,.48), rgba(0,0,0,.32)) padding-box,
+    linear-gradient(
+      135deg,
+      #4b1908,
+      #c9571c 24%,
+      #ffb36a 43%,
+      #f58a3b 56%,
+      #96390f 80%,
+      #3e1508
+    ) border-box !important;
+  box-shadow:
+    inset 0 1px 2px rgba(255,210,160,.22),
+    inset 0 -2px 4px rgba(0,0,0,.75) !important;
+}
+
+/* FIM DO ACABAMENTO 3D DOS BOTOES E RELOGIOS */
+
+
+/* FUNDO PRETO TRANSLUCIDO DOS RELOGIOS */
+#relogios-mundo .relogio-cidade {
+  background:
+    linear-gradient(rgba(0,0,0,.22), rgba(0,0,0,.22)) padding-box,
+    linear-gradient(
+      135deg,
+      #4b1908,
+      #c9571c 24%,
+      #ffb36a 43%,
+      #f58a3b 56%,
+      #96390f 80%,
+      #3e1508
+    ) border-box !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+}
+/* FIM DO AJUSTE */
+
+
+/* CORRECAO: COBRE SOMENTE NA BORDA DOS RELOGIOS */
+#relogios-mundo .relogio-cidade {
+  border: 1.5px solid transparent !important;
+  border-radius: 9px !important;
+  background:
+    linear-gradient(rgba(0,0,0,.38), rgba(0,0,0,.38)) padding-box,
+    linear-gradient(
+      135deg,
+      #4b1908,
+      #c9571c 24%,
+      #ffb36a 43%,
+      #f58a3b 56%,
+      #96390f 80%,
+      #3e1508
+    ) border-box !important;
+  background-clip: padding-box, border-box !important;
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,.08),
+    inset 0 -2px 4px rgba(0,0,0,.75) !important;
+}
+/* FIM DA CORRECAO */
+
+
+/* RELOGIOS: INTERIOR PRETO, CONTORNO COBRE */
+#relogios-mundo .relogio-cidade {
+  background:
+    linear-gradient(rgba(0,0,0,.78), rgba(0,0,0,.78)) padding-box,
+    linear-gradient(
+      135deg,
+      #4b1908,
+      #c9571c 24%,
+      #ffb36a 43%,
+      #f58a3b 56%,
+      #96390f 80%,
+      #3e1508
+    ) border-box !important;
+  background-clip: padding-box, border-box !important;
+  -webkit-background-clip: padding-box, border-box !important;
+}
+/* FIM */
+
+
+/* ACABAMENTO FINAL DOS CINCO RELOGIOS */
+#relogios-mundo .relogio-cidade {
+  box-sizing: border-box !important;
+  padding: 6px 3px 7px !important;
+  min-height: 50px !important;
+  border-radius: 10px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 2px !important;
+  background:
+    linear-gradient(rgba(0,0,0,.38), rgba(0,0,0,.38)) padding-box,
+    linear-gradient(
+      135deg,
+      #4b1908,
+      #c9571c 24%,
+      #ffb36a 43%,
+      #f58a3b 56%,
+      #96390f 80%,
+      #3e1508
+    ) border-box !important;
+  background-clip: padding-box, border-box !important;
+}
+/* FIM DO ACABAMENTO */
+
+
+/* PAINEL UNICO PARA OS CINCO RELOGIOS */
+#relogios-mundo {
+  box-sizing: border-box !important;
+  padding: 7px 6px 8px !important;
+  gap: 3px !important;
+  border: 1.5px solid transparent !important;
+  border-radius: 12px !important;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(65,65,65,.78),
+      rgba(25,25,25,.82),
+      rgba(45,45,45,.76)
+    ) padding-box,
+    linear-gradient(
+      135deg,
+      #4b1908,
+      #c9571c 24%,
+      #ffb36a 43%,
+      #f58a3b 56%,
+      #96390f 80%,
+      #3e1508
+    ) border-box !important;
+  box-shadow:
+    inset 0 1px 2px rgba(255,210,160,.45),
+    inset 0 -2px 4px rgba(0,0,0,.8),
+    0 2px 5px rgba(0,0,0,.8) !important;
+  background-clip: padding-box, border-box !important;
+}
+
+/* RELÓGIOS SEM CAIXAS INDIVIDUAIS */
+#relogios-mundo .relogio-cidade {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 3px 1px !important;
+  min-height: 0 !important;
+}
+/* FIM DO PAINEL UNICO */
+
+
+/* AJUSTE FINAL DO PAINEL DOS RELOGIOS */
+#relogios-mundo {
+  box-sizing: border-box !important;
+  padding: 6px 5px 7px !important;
+  border: 1px solid transparent !important;
+  border-radius: 12px !important;
+  background:
+    linear-gradient(
+      rgba(0,0,0,.38),
+      rgba(0,0,0,.38)
+    ) padding-box,
+    linear-gradient(
+      135deg,
+      #4b1908,
+      #c9571c 24%,
+      #ffb36a 43%,
+      #f58a3b 56%,
+      #96390f 80%,
+      #3e1508
+    ) border-box !important;
+  background-clip: padding-box, border-box !important;
+  box-shadow:
+    inset 0 1px 2px rgba(255,210,160,.25),
+    inset 0 -2px 3px rgba(0,0,0,.8),
+    0 1px 3px rgba(0,0,0,.7) !important;
+}
+/* FIM DO AJUSTE */
+
+
+/* RELOGIOS COM FUNDO TRANSPARENTE */
+#relogios-mundo {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image:
+    linear-gradient(135deg, #4b1908, #c9571c 24%, #ffb36a 43%, #f58a3b 56%, #96390f 80%, #3e1508) !important;
+  background-clip: border-box !important;
+  border: 1px solid transparent !important;
+  box-shadow: none !important;
+}
+/* FIM */
+
+
+/* CORRECAO: FUNDO TRANSPARENTE E MOLDURA COBRE */
+#relogios-mundo {
+  border: 1.5px solid transparent !important;
+  border-radius: 12px !important;
+  background:
+    linear-gradient(transparent, transparent) padding-box,
+    linear-gradient(
+      135deg,
+      #4b1908,
+      #c9571c 24%,
+      #ffb36a 43%,
+      #f58a3b 56%,
+      #96390f 80%,
+      #3e1508
+    ) border-box !important;
+  background-clip: padding-box, border-box !important;
+  -webkit-background-clip: padding-box, border-box !important;
+  box-shadow:
+    inset 0 1px 2px rgba(255,210,160,.35),
+    inset 0 -2px 3px rgba(0,0,0,.8),
+    0 1px 3px rgba(0,0,0,.7) !important;
+}
+
+#relogios-mundo .relogio-cidade {
+  background: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+/* FIM DA CORRECAO */
+
+
+/* RELOGIOS DIRETAMENTE SOBRE A IMAGEM DE FUNDO */
+#relogios-mundo {
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+#relogios-mundo .relogio-cidade {
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+#relogios-mundo::before,
+#relogios-mundo::after,
+#relogios-mundo .relogio-cidade::before,
+#relogios-mundo .relogio-cidade::after {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+/* FIM */
+
+
+/* ACABAMENTO 3D COBRE — BOTOES VOLTAR */
+.tela .voltar,
+.tela a.voltar,
+.tela button.voltar,
+.tela .carteira-link {
+  background-color: rgba(0,0,0,.72) !important;
+  border: 2px solid transparent !important;
+  border-radius: 9px !important;
+  box-shadow:
+    inset 0 1px 2px rgba(255,226,160,.35),
+    inset 0 -3px 5px rgba(0,0,0,.95),
+    0 2px 5px rgba(0,0,0,.8) !important;
+  position: relative !important;
+  isolation: isolate !important;
+}
+.tela .voltar::before,
+.tela a.voltar::before,
+.tela button.voltar::before,
+.tela .carteira-link::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  border-radius: 9px;
+  background: linear-gradient(135deg,
+    #57200d 0%, #d8793b 20%, #ffe0a0 36%,
+    #a84c20 52%, #f5b66b 70%, #5b210e 86%, #d8793b 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: -1;
+}
+.tela .voltar::after,
+.tela a.voltar::after,
+.tela button.voltar::after,
+.tela .carteira-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 7px;
+  background: rgba(0,0,0,.72);
+  z-index: -2;
+  pointer-events: none;
+}
+/* FIM DO ACABAMENTO 3D COBRE */
+
+
+
+</style>
+</head>
+
+<body>
+
+<div id="inicio" class="tela">
+  <button class="menu-botao"
+    onclick="abrirSegundaTela()"
+    aria-label="Abrir menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</div>
+
+<div id="segunda" class="tela">
+  <button class="voltar"
+    onclick="voltarInicio()"
+    aria-label="Voltar">‹</button>
+
+  <div class="botoes">
+    <button class="botao-menu" onclick="abrirInvestimentos()">INVESTIMENTOS</button>
+    <button class="botao-menu" onclick="abrirBlockchain()">BLOCKCHAIN</button>
+    <button class="botao-menu" onclick="abrirCarteira()">CARTEIRA</button>
+    <button class="botao-menu">CERTIFICADOS</button>
+    <button class="botao-menu" onclick="abrirExchange()">EXCHANGE</button>
+    <button class="botao-menu">GARANTIA FINANCEIRA</button>
+    <button class="botao-menu" onclick="abrirRCC()">RENDE CAPITAL COINS</button>
+    <button class="botao-menu" onclick="abrirContato()">CONTATO</button>
+  </div>
+
+  <div id="relogios-mundo">
+    <div class="relogio-cidade"><span class="relogio-nome">BRASIL</span><span class="relogio-hora" id="hora-brasil">--:--:--</span></div>
+    <div class="relogio-cidade"><span class="relogio-nome">NOVA YORK</span><span class="relogio-hora" id="hora-ny">--:--:--</span></div>
+    <div class="relogio-cidade"><span class="relogio-nome">CHINA</span><span class="relogio-hora" id="hora-china">--:--:--</span></div>
+    <div class="relogio-cidade"><span class="relogio-nome">DUBAI</span><span class="relogio-hora" id="hora-dubai">--:--:--</span></div>
+    <div class="relogio-cidade"><span class="relogio-nome">LONDRES</span><span class="relogio-hora" id="hora-londres">--:--:--</span></div>
+  </div>
+</div>
+
+
+<div id="investimentos" class="tela">
+  <button class="voltar" onclick="voltarMenuInvestimentos()" aria-label="Voltar">‹</button>
+
+  <div class="investimento-conteudo">
+    <h1 class="investimentos-titulo">INVESTIMENTOS</h1>
+    <p class="investimentos-descricao">Acesse sua carteira de investimentos</p>
+    <a class="botao-menu carteira-link"
+       href="https://investidor10.com.br/wallet/my-wallet/3215684"
+       target="_blank"
+       rel="noopener noreferrer">
+      ACESSAR MINHA CARTEIRA
+    </a>
+    <div class="investimentos-texto">
+  <p>A RENDE CAPITAL desenvolve sua atuação no mercado nacional por meio de iniciativas de investimento com capital próprio, adotando uma visão estratégica voltada à análise de oportunidades, à gestão responsável de recursos e à busca por crescimento sustentável.</p>
+
+  <p>A empresa valoriza o conhecimento de mercado, a capacidade analítica e o planejamento como elementos fundamentais para a tomada de decisões. Sua atuação envolve a avaliação de cenários econômicos, o acompanhamento de tendências e a identificação de oportunidades de investimento, considerando os riscos e as particularidades de cada operação.</p>
+
+  <p>Por meio da experiência e da capacidade técnica de seus consultores, a RENDE CAPITAL busca oferecer aos clientes acompanhamento estratégico de suas carteiras de investimentos. O trabalho envolve analisar possibilidades, avaliar alternativas e desenvolver estratégias que possam contribuir para melhorar o desempenho dos recursos investidos e buscar maior eficiência na composição dos portfólios.</p>
+
+  <p>Nosso compromisso é trabalhar com responsabilidade, transparência e visão de longo prazo, respeitando os objetivos de cada cliente e as condições do mercado. A busca por resultados consistentes exige análise contínua, disciplina e compreensão dos riscos envolvidos, sem promessa ou garantia de rentabilidade.</p>
+</div>
+  </div>
+</div>
+
+<div id="blockchain" class="tela">
+  <button class="voltar" onclick="voltarMenuBlockchain()" aria-label="Voltar">‹</button>
+
+  <div class="investimento-conteudo">
+    <h1 class="investimentos-titulo">BLOCKCHAIN</h1>
+    <p class="investimentos-descricao">Tecnologia, rastreabilidade e ativos digitais</p>
+
+    <a class="botao-menu carteira-link"
+       href="https://blockscan.com/group?id=779011b6-8810-605b-061f-968d1da7fa6d&addresses=0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2&name=Patrim%C3%B4nio+Rende+Capital"
+       target="_blank"
+       rel="noopener noreferrer">
+      CONSULTAR BLOCKCHAIN
+    </a>
+
+    <div class="investimentos-texto">
+      <p>A RENDE CAPITAL utiliza a tecnologia blockchain como parte de sua estrutura de acompanhamento e consulta de ativos digitais associados ao seu patrimônio operacional, em um ambiente financeiro cada vez mais conectado e globalizado.</p>
+
+      <p>A blockchain é uma tecnologia que permite registrar, verificar e rastrear transações digitais por meio de registros distribuídos. Esses registros possibilitam consultar informações sobre movimentações realizadas na rede, contribuindo para a transparência, a integridade dos dados e a rastreabilidade das operações.</p>
+
+      <p>No contexto da RENDE CAPITAL, a tecnologia oferece um meio de consulta às informações públicas relacionadas aos criptoativos vinculados ao patrimônio operacional da empresa, permitindo acompanhar registros e movimentações disponíveis na rede. Essa infraestrutura amplia as possibilidades de monitoramento e análise das operações no mercado internacional.</p>
+
+      <p>Por meio do Blockscan, é possível acessar os dados públicos associados ao endereço disponibilizado para consulta. A RENDE CAPITAL valoriza o uso de ferramentas tecnológicas, a análise contínua das informações e a transparência na apresentação de seus registros, respeitando as características e os riscos próprios do mercado de criptoativos.</p>
+    </div>
+  </div>
+</div>
+
+
+<div id="exchange" class="tela">
+  <button class="voltar" onclick="voltarMenuExchange()" aria-label="Voltar">‹</button>
+  <div class="investimento-conteudo">
+    <h1 class="investimentos-titulo">RENDE CAPITAL EXCHANGE</h1>
+    <p class="investimentos-descricao">TECNOLOGIA, FLEXIBILIDADE E NEGOCIAÇÃO DE ATIVOS DIGITAIS</p>
+    <div class="investimentos-texto">
+      <p>A RENDE CAPITAL EXCHANGE nasce com o propósito de proporcionar aos seus clientes uma experiência moderna, eficiente e acessível no universo dos ativos digitais. Desenvolvida com foco na praticidade, na agilidade e na evolução das operações financeiras, nossa plataforma busca simplificar os processos de compra e venda, oferecendo um ambiente integrado para a realização de negociações no mercado de criptoativos.</p>
+      <p>Nossa proposta é aproximar tecnologia e liberdade operacional, proporcionando maior flexibilidade nas negociações e reduzindo barreiras que possam dificultar o acesso dos clientes ao mercado digital. A plataforma é concebida para oferecer condições operacionais adaptáveis, sem a adoção de cotas fixas e universais de negociação como princípio de funcionamento, observadas as condições de liquidez, segurança, verificação e os requisitos aplicáveis a cada operação.</p>
+      <p>Por meio de uma infraestrutura tecnológica em constante evolução, a RENDE CAPITAL busca facilitar o acompanhamento das operações, a movimentação de ativos e a integração entre diferentes possibilidades do ecossistema financeiro digital. Cada funcionalidade é pensada para contribuir com uma experiência mais intuitiva, transparente e alinhada às necessidades de um mercado internacional cada vez mais conectado.</p>
+      <p>Mais do que uma plataforma de negociação, a RENDE CAPITAL EXCHANGE representa nosso compromisso com a inovação, a eficiência e a construção de soluções financeiras orientadas para o futuro.</p>
+      <p><strong>RENDE CAPITAL — Tecnologia, flexibilidade e novas possibilidades para o mercado de ativos digitais.</strong></p>
+    </div>
+  </div>
+</div>
+
+
+<div id="rcc" class="tela">
+  <button class="voltar" onclick="voltarRCC()" aria-label="Voltar">‹</button>
+
+  <div class="rcc-conteudo">
+    <h1 class="investimentos-titulo">RENDE CAPITAL COINS</h1>
+    <p class="investimentos-descricao">RCC — ATIVO DIGITAL</p>
+
+    <img class="rcc-moeda" src="assets/rcc-moeda.png"
+         alt="Moeda Rende Capital Coins RCC">
+
+    <div class="rcc-dados">
+      <div class="rcc-linha"><span>Nome</span><strong>Rende Capital COINS</strong></div>
+      <div class="rcc-linha"><span>Sigla</span><strong>RCC</strong></div>
+      <div class="rcc-linha"><span>Rede</span><strong>Ethereum</strong></div>
+      <div class="rcc-linha"><span>Token</span><strong>1.000.000.000</strong></div>
+      <div class="rcc-linha"><span>Valor de mercado</span><strong>R$ 5.879.200.000,00</strong></div>
+      <div class="rcc-linha"><span>Auditoria</span><strong>Pública</strong></div>
+      <div class="rcc-linha"><span>Supply</span><strong>Fixo</strong></div>
+      <div class="rcc-linha"><span>Propriedade</span><strong>Rende Capital Exchange</strong></div>
+    </div>
+
+    <div class="rcc-texto">
+      <h2>UMA NOVA PROPOSTA PARA O MERCADO DIGITAL</h2>
+
+      <p>A Rende Capital COINS (RCC) foi criada com o propósito de ampliar as possibilidades de atendimento aos clientes da RENDE CAPITAL, aproximando tecnologia, eficiência operacional e inovação financeira em um ecossistema digital integrado.</p>
+
+      <p>Desenvolvida sobre a infraestrutura da rede Ethereum, a RCC tem como proposta utilizar a tecnologia blockchain para oferecer transparência, rastreabilidade e maior facilidade de acompanhamento das informações relacionadas ao ativo digital.</p>
+
+      <p>Um dos diferenciais propostos para o projeto é sua referência de liquidez de um dólar americano (US$ 1,00), concebida para favorecer a previsibilidade e a praticidade nas operações. A efetiva manutenção dessa referência depende das regras operacionais e dos mecanismos de liquidez aplicáveis.</p>
+
+      <p>A RCC representa uma iniciativa de inovação no mercado de ativos digitais, concebida para integrar tecnologia, acessibilidade e novas possibilidades de utilização dentro do ecossistema RENDE CAPITAL.</p>
+
+      <p>A RENDE CAPITAL busca desenvolver soluções que valorizem a transparência das informações, a responsabilidade operacional e a confiança no relacionamento com seus clientes.</p>
+
+      <p><strong>RENDE CAPITAL COINS — Tecnologia, inovação e novas possibilidades para o futuro financeiro digital.</strong></p>
+    </div>
+  </div>
+</div>
+
+<div id="contato" class="tela">
+  <button class="voltar" onclick="voltarMenuContato()" aria-label="Voltar">‹</button>
+  <div class="investimento-conteudo">
+    <h1 class="investimentos-titulo">ENTRE EM CONTATO</h1>
+    <p class="investimentos-descricao">RENDE CAPITAL</p>
+    <div class="investimentos-texto">
+      <p>Estamos à disposição para atender você, esclarecer dúvidas e fornecer informações sobre nossas atividades, soluções financeiras e serviços relacionados ao mercado de ativos digitais.</p>
+      <p>A RENDE CAPITAL valoriza o relacionamento com seus clientes, a comunicação transparente e a qualidade no atendimento.</p>
+      <p><strong>E-MAIL</strong><br>
+      contato@rendecapital.xyz<br>
+      rendecapital@gmail.com</p>
+      <p><strong>ENDEREÇO</strong><br>
+      Rua Presidente Nereu Ramos, 69<br>
+      Sala 911 — Centro<br>
+      Florianópolis — Santa Catarina, Brasil.</p>
+      <p><strong>ATENDIMENTO VIA WHATSAPP</strong><br>
+      +55 11 95653-2184</p>
+      <p><strong>RENDE CAPITAL</strong><br>
+      Conectando pessoas, tecnologia e novas possibilidades no mercado financeiro.</p>
+    </div>
+  </div>
+</div>
+
+<div id="carteira" class="tela">
+  <button class="voltar" onclick="voltarMenuCarteira()" aria-label="Voltar">‹</button>
+
+  <div class="investimento-conteudo carteira-conteudo">
+    <h1 class="investimentos-titulo">CARTEIRA</h1>
+    <p class="investimentos-descricao">PORTFÓLIO PATRIMÔNIO RENDE CAPITAL</p>
+
+
+
+    <div class="carteira-painel patrimonio-painel">
+      <div class="carteira-status"><span id="carteira-status-texto">ONLINE</span></div>
+      <span class="carteira-legenda">PATRIMÔNIO TOTAL</span>
+      <strong class="carteira-total" id="patrimonio-total">Aguardando integração</strong>
+    </div>
+
+    <div class="carteira-movimentos">
+      <div class="carteira-painel">
+        <span class="carteira-legenda">VOLUME ENVIADO</span>
+        <strong class="carteira-dado" id="volume-enviado">Aguardando API</strong>
+      </div>
+      <div class="carteira-painel">
+        <span class="carteira-legenda">VOLUME RECEBIDO</span>
+        <strong class="carteira-dado" id="volume-recebido">Aguardando API</strong>
+      </div>
+    </div>
+
+    <div class="carteira-ativos">
+      <h2>ATIVOS DA CARTEIRA</h2>
+      <div class="carteira-tabela">
+        <div class="carteira-linha carteira-cabecalho">
+          <span>ATIVO</span>
+          <span>QUANTIDADE</span>
+          <span>VALOR</span>
+        </div>
+        <div class="carteira-linha">
+          <span>ETH</span>
+          <span id="saldo-eth">Consultando...</span>
+          <span id="valor-eth">Aguardando cotação</span>
+        </div>
+        <div class="carteira-linha">
+          <span>Tether USDT</span>
+          <span id="saldo-usdt">Aguardando consulta</span>
+          <span id="valor-usdt">Aguardando cotação</span>
+        </div>
+        <div class="carteira-linha">
+          <span>WETH</span>
+          <span id="saldo-weth">Aguardando consulta</span>
+          <span id="valor-weth">Aguardando cotação</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function abrirSegundaTela() {
+  document.getElementById("inicio").style.display = "none";
+  document.getElementById("segunda").style.display = "block";
+}
+
+function voltarInicio() {
+  document.getElementById("segunda").style.display = "none";
+  document.getElementById("inicio").style.display = "block";
+}
+
+
+function abrirInvestimentos() {
+  document.getElementById("segunda").style.display = "none";
+  document.getElementById("investimentos").style.display = "block";
+}
+
+function voltarMenuInvestimentos() {
+  document.getElementById("investimentos").style.display = "none";
+  document.getElementById("segunda").style.display = "block";
+}
+
+function abrirBlockchain() {
+  document.getElementById("segunda").style.display = "none";
+  document.getElementById("blockchain").style.display = "block";
+}
+
+function voltarMenuBlockchain() {
+  document.getElementById("blockchain").style.display = "none";
+  document.getElementById("segunda").style.display = "block";
+}
+
+function abrirExchange() {
+  document.getElementById("segunda").style.display = "none";
+  document.getElementById("exchange").style.display = "block";
+}
+
+function voltarMenuExchange() {
+  document.getElementById("exchange").style.display = "none";
+  document.getElementById("segunda").style.display = "block";
+}
+
+function abrirRCC() {
+  document.getElementById("segunda").style.display = "none";
+  document.getElementById("rcc").style.display = "block";
+}
+
+function voltarRCC() {
+  document.getElementById("rcc").style.display = "none";
+  document.getElementById("segunda").style.display = "block";
+}
+
+function abrirContato() {
+  document.getElementById("segunda").style.display = "none";
+  document.getElementById("contato").style.display = "block";
+}
+
+function voltarMenuContato() {
+  document.getElementById("contato").style.display = "none";
+  document.getElementById("segunda").style.display = "block";
+}
+
+function abrirCarteira() {
+  document.getElementById("segunda").style.display = "none";
+  document.getElementById("carteira").style.display = "block";
+  atualizarCarteira();
+}
+
+function voltarMenuCarteira() {
+  document.getElementById("carteira").style.display = "none";
+  document.getElementById("segunda").style.display = "block";
+}
+
+
+
+
+async function atualizarCarteira() {
+  const el = id => document.getElementById(id);
+
+  const numero = n => Number(n).toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+  const quantidade = (n, casas = 8) => Number(n).toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: casas
+  });
+
+  const moeda = n => "R$ " + numero(n);
+
+  try {
+    el("carteira-status-texto").textContent = "CONSULTANDO ETHEREUM...";
+
+    const resposta = await fetch("http://127.0.0.1:8082/api/portfolio", {
+      cache: "no-store"
+    });
+
+    const dados = await resposta.json();
+
+    if (!resposta.ok || !dados.ok) {
+      throw new Error(dados.error || "Falha na consulta da API");
+    }
+
+    const d = dados.data;
+    const validar = (item, nome) => {
+      if (!item || item.status !== "1" || !/^\d+$/.test(String(item.result))) {
+        throw new Error("Saldo inválido: " + nome);
+      }
+      return item.result;
+    };
+
+    const eth = Number(BigInt(validar(d.balance, "ETH"))) / 1e18;
+    const weth = Number(BigInt(validar(d.weth_balance, "WETH"))) / 1e18;
+    const usdt = Number(BigInt(validar(d.usdt_balance, "USDT"))) / 1e6;
+
+    const precos = d.prices;
+    if (!precos || !Number.isFinite(Number(precos.eth_brl)) ||
+        !Number.isFinite(Number(precos.weth_brl)) ||
+        !Number.isFinite(Number(precos.usdt_brl))) {
+      throw new Error("Cotações indisponíveis");
+    }
+
+    const valorEth = eth * Number(precos.eth_brl);
+    const valorWeth = weth * Number(precos.weth_brl);
+    const valorUsdt = usdt * Number(precos.usdt_brl);
+    const patrimonio = valorEth + valorWeth + valorUsdt;
+
+    el("saldo-eth").textContent = quantidade(eth) + " ETH";
+    el("saldo-weth").textContent = quantidade(weth) + " WETH";
+    el("saldo-usdt").textContent = quantidade(usdt, 6) + " USDT";
+
+    el("valor-eth").textContent = moeda(valorEth);
+    el("valor-weth").textContent = moeda(valorWeth);
+    el("valor-usdt").textContent = moeda(valorUsdt);
+    el("patrimonio-total").textContent = moeda(patrimonio);
+
+    const endereco = String(dados.address || "").toLowerCase();
+    const txs = d.transactions;
+    const transfers = d.token_transfers;
+
+    const contratos = {
+      weth: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+      usdt: "0xdac17f958d2ee523a2206206994597c13d831ec7"
+    };
+
+    let totalEnviadoBRL = 0;
+    let totalRecebidoBRL = 0;
+
+    // Transações nativas de ETH
+    if (txs && Array.isArray(txs.result)) {
+      for (const tx of txs.result) {
+        if (tx.isError === "1" || !/^[0-9]+$/.test(String(tx.value))) continue;
+
+        const valorBRL =
+          (Number(BigInt(tx.value)) / 1e18) * Number(precos.eth_brl);
+
+        if (String(tx.from).toLowerCase() === endereco) {
+          totalEnviadoBRL += valorBRL;
+        }
+        if (String(tx.to).toLowerCase() === endereco) {
+          totalRecebidoBRL += valorBRL;
+        }
+      }
+    }
+
+    // Transferências de WETH e USDT
+    if (transfers && Array.isArray(transfers.result)) {
+      for (const t of transfers.result) {
+        if (t.isError === "1" || !/^[0-9]+$/.test(String(t.value))) continue;
+
+        const contrato = String(t.contractAddress).toLowerCase();
+        let cotacao;
+
+        if (contrato === contratos.weth) {
+          cotacao = Number(precos.weth_brl);
+        } else if (contrato === contratos.usdt) {
+          cotacao = Number(precos.usdt_brl);
+        } else {
+          continue;
+        }
+
+        const casas = Number(t.tokenDecimal);
+        if (!Number.isInteger(casas) || casas < 0 || casas > 36) continue;
+
+        const quantidadeToken = Number(BigInt(t.value)) / (10 ** casas);
+        const valorBRL = quantidadeToken * cotacao;
+
+        if (String(t.from).toLowerCase() === endereco) {
+          totalEnviadoBRL += valorBRL;
+        }
+        if (String(t.to).toLowerCase() === endereco) {
+          totalRecebidoBRL += valorBRL;
+        }
+      }
+    }
+
+    el("volume-enviado").textContent = numero(totalEnviadoBRL);
+    el("volume-recebido").textContent = numero(totalRecebidoBRL);
+    el("carteira-status-texto").textContent = "ONLINE";
+
+  } catch (erro) {
+    el("carteira-status-texto").textContent = "ERRO NA CONSULTA";
+    for (const id of [
+      "saldo-eth", "saldo-weth", "saldo-usdt",
+      "valor-eth", "valor-weth", "valor-usdt",
+      "patrimonio-total", "volume-enviado", "volume-recebido"
+    ]) {
+      el(id).textContent = "Indisponível";
+    }
+    console.error("RENDE CAPITAL:", erro);
+  }
+}
+
+function atualizarRelogios() {
+  const cidades = {
+    "hora-brasil": "America/Sao_Paulo",
+    "hora-ny": "America/New_York",
+    "hora-china": "Asia/Shanghai",
+    "hora-dubai": "Asia/Dubai",
+    "hora-londres": "Europe/London"
+  };
+  for (const [id, fuso] of Object.entries(cidades)) {
+    document.getElementById(id).textContent =
+      new Intl.DateTimeFormat("pt-BR", {
+        timeZone: fuso,
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+      }).format(new Date());
+  }
+}
+atualizarRelogios();
+setInterval(atualizarRelogios, 1000);
+
+</script>
+
+</body>
+</html>
