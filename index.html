@@ -1534,7 +1534,7 @@ async function atualizarCarteira() {
     }
 
     const rede = await provider.request({ method: "eth_chainId" });
-    if (rede !== "0x1") {
+    if (Number(rede) !== 1) {
       throw new Error("Selecione Ethereum Mainnet na carteira.");
     }
 
@@ -1648,7 +1648,7 @@ async function atualizarCarteira() {
     el("carteira-status-texto").textContent = "ONLINE";
 
   } catch (erro) {
-    el("carteira-status-texto").textContent = "ERRO NA CONSULTA";
+    el("carteira-status-texto").textContent = "ERRO: " + String(erro?.message || erro).slice(0, 100);
     for (const id of [
       "saldo-eth", "saldo-weth", "saldo-usdt",
       "valor-eth", "valor-weth", "valor-usdt",
