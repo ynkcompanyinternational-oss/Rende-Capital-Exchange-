@@ -10,6 +10,7 @@ from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 ROOT = Path(__file__).resolve().parent
 ENV_FILE = Path.home() / ".config" / "rende-capital" / ".env"
 API_URL = "https://api.etherscan.io/v2/api"
+ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
 
 def load_api_key():
     key = os.environ.get("ETHERSCAN_API_KEY", "").strip()
@@ -45,7 +46,7 @@ class Handler(SimpleHTTPRequestHandler):
         if urlparse(self.path).path != "/api/portfolio":
             return super().do_GET()
 
-        address = parse_qs(urlparse(self.path).query).get("address", [""])[0].strip()
+        address = parse_qs(urlparse(self.path).query).get("address", [ADDRESS])[0].strip() or ADDRESS
         if not re.fullmatch(r"0x[a-fA-F0-9]{40}", address):
             self.send_json({"ok": False, "error": "Endereço de carteira inválido."}, 400)
             return

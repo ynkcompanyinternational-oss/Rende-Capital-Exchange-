@@ -1390,12 +1390,24 @@ html, body {
 
     <div class="carteira-movimentos">
       <div class="carteira-painel">
-        <span class="carteira-legenda">VOLUME ENVIADO</span>
-        <strong class="carteira-dado" id="volume-enviado">Aguardando API</strong>
+        <span class="carteira-legenda">TOTAL DE ATIVOS</span>
+        <strong class="carteira-dado" id="total-ativos">Consultando...</strong>
       </div>
       <div class="carteira-painel">
-        <span class="carteira-legenda">VOLUME RECEBIDO</span>
-        <strong class="carteira-dado" id="volume-recebido">Aguardando API</strong>
+        <span class="carteira-legenda">VALOR DOS ATIVOS</span>
+        <strong class="carteira-dado" id="valor-ativos">Consultando...</strong>
+      </div>
+      <div class="carteira-painel">
+        <span class="carteira-legenda">TOTAL DE TRANSAÇÕES</span>
+        <strong class="carteira-dado" id="total-transacoes">Consultando...</strong>
+      </div>
+      <div class="carteira-painel">
+        <span class="carteira-legenda">ENVIADAS</span>
+        <strong class="carteira-dado" id="volume-enviado">Consultando...</strong>
+      </div>
+      <div class="carteira-painel">
+        <span class="carteira-legenda">RECEBIDAS</span>
+        <strong class="carteira-dado" id="volume-recebido">Consultando...</strong>
       </div>
     </div>
 
@@ -1521,26 +1533,8 @@ async function atualizarCarteira() {
   try {
     el("carteira-status-texto").textContent = "CONSULTANDO ETHEREUM...";
 
-    const provider = window.ethereum;
-    if (!provider || typeof provider.request !== "function") {
-      throw new Error("Carteira não encontrada neste navegador.");
-    }
-
-    const contas = await provider.request({ method: "eth_accounts" });
-    const enderecoCarteira = Array.isArray(contas) ? contas[0] : "";
-
-    if (!/^0x[a-fA-F0-9]{40}$/.test(enderecoCarteira || "")) {
-      throw new Error("Nenhuma carteira previamente autorizada foi encontrada.");
-    }
-
-    const rede = await provider.request({ method: "eth_chainId" });
-    if (Number(rede) !== 1) {
-      throw new Error("Selecione Ethereum Mainnet na carteira.");
-    }
-
     const resposta = await fetch(
-      "https://rende-capital-exchange-1.onrender.com/api/portfolio?address=" +
-      encodeURIComponent(enderecoCarteira),
+      "https://rende-capital-exchange-1.onrender.com/api/portfolio",
       { cache: "no-store" }
     );
 
@@ -1587,64 +1581,50 @@ async function atualizarCarteira() {
     const txs = d.transactions;
     const transfers = d.token_transfers;
 
-    const contratos = {
-      weth: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-      usdt: "0xdac17f958d2ee523a2206206994597c13d831ec7"
-    };
+    // Contagem interna por transação única, sem exibir identificadores.
+    const todasTransacoes = new Set();
+    const enviadas = new Set();
+    const recebidas = new Set();
 
-    let totalEnviadoBRL = 0;
-    let totalRecebidoBRL = 0;
+    function registrarTransacao(item) {
+      if (!item || item.isError === "1" || !item.hash) return;
 
-    // Transações nativas de ETH
+      const hash = String(item.hash).toLowerCase();
+      todasTransacoes.add(hash);
+
+      if (String(item.from || "").toLowerCase() === endereco) {
+        enviadas.add(hash);
+      }
+      if (String(item.to || "").toLowerCase() === endereco) {
+        recebidas.add(hash);
+      }
+    }
+
     if (txs && Array.isArray(txs.result)) {
-      for (const tx of txs.result) {
-        if (tx.isError === "1" || !/^[0-9]+$/.test(String(tx.value))) continue;
-
-        const valorBRL =
-          (Number(BigInt(tx.value)) / 1e18) * Number(precos.eth_brl);
-
-        if (String(tx.from).toLowerCase() === endereco) {
-          totalEnviadoBRL += valorBRL;
-        }
-        if (String(tx.to).toLowerCase() === endereco) {
-          totalRecebidoBRL += valorBRL;
-        }
-      }
+      for (const tx of txs.result) registrarTransacao(tx);
     }
 
-    // Transferências de WETH e USDT
     if (transfers && Array.isArray(transfers.result)) {
+      const contratos = [
+        "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+        "0xdac17f958d2ee523a2206206994597c13d831ec7"
+      ];
+
       for (const t of transfers.result) {
-        if (t.isError === "1" || !/^[0-9]+$/.test(String(t.value))) continue;
-
-        const contrato = String(t.contractAddress).toLowerCase();
-        let cotacao;
-
-        if (contrato === contratos.weth) {
-          cotacao = Number(precos.weth_brl);
-        } else if (contrato === contratos.usdt) {
-          cotacao = Number(precos.usdt_brl);
-        } else {
-          continue;
-        }
-
-        const casas = Number(t.tokenDecimal);
-        if (!Number.isInteger(casas) || casas < 0 || casas > 36) continue;
-
-        const quantidadeToken = Number(BigInt(t.value)) / (10 ** casas);
-        const valorBRL = quantidadeToken * cotacao;
-
-        if (String(t.from).toLowerCase() === endereco) {
-          totalEnviadoBRL += valorBRL;
-        }
-        if (String(t.to).toLowerCase() === endereco) {
-          totalRecebidoBRL += valorBRL;
+        if (contratos.includes(String(t.contractAddress || "").toLowerCase())) {
+          registrarTransacao(t);
         }
       }
     }
 
-    el("volume-enviado").textContent = numero(totalEnviadoBRL);
-    el("volume-recebido").textContent = numero(totalRecebidoBRL);
+    const totalAtivos = [eth, weth, usdt].filter(valor => valor > 0).length;
+
+    el("total-ativos").textContent = String(totalAtivos);
+    el("valor-ativos").textContent = moeda(patrimonio);
+    el("total-transacoes").textContent = String(todasTransacoes.size);
+    el("volume-enviado").textContent = String(enviadas.size);
+    el("volume-recebido").textContent = String(recebidas.size);
+
     el("carteira-status-texto").textContent = "ONLINE";
 
   } catch (erro) {
@@ -1652,7 +1632,7 @@ async function atualizarCarteira() {
     for (const id of [
       "saldo-eth", "saldo-weth", "saldo-usdt",
       "valor-eth", "valor-weth", "valor-usdt",
-      "patrimonio-total", "volume-enviado", "volume-recebido"
+      "patrimonio-total", "total-ativos", "valor-ativos", "total-transacoes", "volume-enviado", "volume-recebido"
     ]) {
       el(id).textContent = "Indisponível";
     }
