@@ -1556,26 +1556,40 @@ async function atualizarCarteira() {
     const weth = Number(BigInt(validar(d.weth_balance, "WETH"))) / 1e18;
     const usdt = Number(BigInt(validar(d.usdt_balance, "USDT"))) / 1e6;
 
-    const precos = d.prices;
-    if (!precos || !Number.isFinite(Number(precos.eth_brl)) ||
-        !Number.isFinite(Number(precos.weth_brl)) ||
-        !Number.isFinite(Number(precos.usdt_brl))) {
-      throw new Error("Cotações indisponíveis");
-    }
-
-    const valorEth = eth * Number(precos.eth_brl);
-    const valorWeth = weth * Number(precos.weth_brl);
-    const valorUsdt = usdt * Number(precos.usdt_brl);
-    const patrimonio = valorEth + valorWeth + valorUsdt;
-
     el("saldo-eth").textContent = quantidade(eth) + " ETH";
     el("saldo-weth").textContent = quantidade(weth) + " WETH";
     el("saldo-usdt").textContent = quantidade(usdt, 6) + " USDT";
 
-    el("valor-eth").textContent = moeda(valorEth);
-    el("valor-weth").textContent = moeda(valorWeth);
-    el("valor-usdt").textContent = moeda(valorUsdt);
-    el("patrimonio-total").textContent = moeda(patrimonio);
+    const precos = d.prices;
+    const cotacoesOk = !!precos &&
+      ["eth_brl", "weth_brl", "usdt_brl"].every(k =>
+        precos[k] !== undefined &&
+        precos[k] !== null &&
+        precos[k] !== "" &&
+        Number.isFinite(Number(precos[k]))
+      );
+
+    let patrimonio = 0;
+
+    if (cotacoesOk) {
+      const valorEth = eth * Number(precos.eth_brl);
+      const valorWeth = weth * Number(precos.weth_brl);
+      const valorUsdt = usdt * Number(precos.usdt_brl);
+      patrimonio = valorEth + valorWeth + valorUsdt;
+
+      el("valor-eth").textContent = moeda(valorEth);
+      el("valor-weth").textContent = moeda(valorWeth);
+      el("valor-usdt").textContent = moeda(valorUsdt);
+      el("patrimonio-total").textContent = moeda(patrimonio);
+      el("valor-ativos").textContent = moeda(patrimonio);
+    } else {
+      for (const id of [
+        "valor-eth", "valor-weth", "valor-usdt",
+        "patrimonio-total", "valor-ativos"
+      ]) {
+        el(id).textContent = "Cotação indisponível";
+      }
+    }
 
     const endereco = String(dados.address || "").toLowerCase();
     const txs = d.transactions;
@@ -1620,12 +1634,11 @@ async function atualizarCarteira() {
     const totalAtivos = [eth, weth, usdt].filter(valor => valor > 0).length;
 
     el("total-ativos").textContent = String(totalAtivos);
-    el("valor-ativos").textContent = moeda(patrimonio);
     el("total-transacoes").textContent = String(todasTransacoes.size);
     el("volume-enviado").textContent = String(enviadas.size);
     el("volume-recebido").textContent = String(recebidas.size);
 
-    el("carteira-status-texto").textContent = "ONLINE";
+    el("carteira-status-texto").textContent = cotacoesOk ? "ONLINE" : "ONLINE — COTAÇÃO INDISPONÍVEL";
 
   } catch (erro) {
     el("carteira-status-texto").textContent = "ERRO: " + String(erro?.message || erro).slice(0, 100);
