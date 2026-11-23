@@ -1427,6 +1427,57 @@ html body #carteira .carteira-endereco {
   box-shadow: none !important;
 }
 
+
+/* TELA DE CERTIFICADOS */
+#certificados {
+  display: none;
+  background-image: url("assets/fundo-investimentos.png");
+}
+
+.certificados-conteudo {
+  position: absolute;
+  top: 12%;
+  bottom: 4%;
+  left: 5%;
+  width: 90%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  text-align: center;
+  padding-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.certificados-conteudo .investimentos-titulo {
+  margin-bottom: 5px;
+}
+
+.certificado-item {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.certificado-item img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.certificado-item p {
+  margin: 0;
+  color: #e6a05a;
+  font-family: Georgia, serif;
+  font-size: clamp(13px, 3.5vw, 16px);
+  font-weight: bold;
+  text-align: center;
+}
+
 </style>
 </head>
 
@@ -1451,7 +1502,7 @@ html body #carteira .carteira-endereco {
     <button class="botao-menu" onclick="abrirInvestimentos()">INVESTIMENTOS</button>
     <button class="botao-menu" onclick="abrirBlockchain()">BLOCKCHAIN</button>
     <button class="botao-menu" onclick="abrirCarteira()">CARTEIRA</button>
-    <button class="botao-menu">CERTIFICADOS</button>
+    <button class="botao-menu" onclick="abrirCertificados()">CERTIFICADOS</button>
     <button class="botao-menu" onclick="abrirExchange()">EXCHANGE</button>
     <button class="botao-menu">GARANTIA FINANCEIRA</button>
     <button class="botao-menu" onclick="abrirRCC()">RENDE CAPITAL COINS</button>
@@ -1648,7 +1699,39 @@ html body #carteira .carteira-endereco {
   </div>
 </div>
 
+
+<div id="certificados" class="tela">
+  <button class="voltar" onclick="voltarMenuCertificados()" aria-label="Voltar">‹</button>
+
+  <div class="certificados-conteudo">
+    <h1 class="investimentos-titulo">CERTIFICADOS</h1>
+
+    <div class="certificado-item">
+      <img src="assets/certificados/certificado-custodia.png"
+           alt="Custody Certificate">
+      <p>Documento referente à custódia de ativos digitais.</p>
+    </div>
+
+    <div class="certificado-item">
+      <img src="assets/certificados/certificado-blockchain.png"
+           alt="Blockchain Validation Certificate">
+      <p>Documento referente à validação de registros em blockchain.</p>
+    </div>
+  </div>
+</div>
+
 <script>
+
+function abrirCertificados() {
+  document.getElementById("segunda").style.display = "none";
+  document.getElementById("certificados").style.display = "block";
+}
+
+function voltarMenuCertificados() {
+  document.getElementById("certificados").style.display = "none";
+  document.getElementById("segunda").style.display = "block";
+}
+
 function abrirSegundaTela() {
   document.getElementById("inicio").style.display = "none";
   document.getElementById("segunda").style.display = "block";
