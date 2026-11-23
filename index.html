@@ -35,7 +35,7 @@ html, body {
 
 #inicio {
   background-image: url("assets/inicio.png");
-  background-size: 96% 96%;
+  background-size: 119% 119%;
   background-position: center;
   background-color: #080808;
 }
@@ -65,7 +65,7 @@ html, body {
 
 .menu-botao span {
   width: 29.4px;
-  height: 3.15px;
+  height: 4px;
   border-radius: 5px;
   background: linear-gradient(
     105deg,
@@ -1202,6 +1202,75 @@ html, body {
 /* FIM DO ACABAMENTO 3D COBRE */
 
 
+
+
+/* PADRAO FINAL: BRANCO FOSCO E PRATA */
+html body #segunda *,
+html body #investimentos *,
+html body #exchange *,
+html body #rcc *,
+html body #contato *,
+html body #blockchain *,
+html body #carteira *,
+html body #relogios-mundo * {
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-weight: 600 !important;
+  color: #e8e8e4 !important;
+  -webkit-text-fill-color: #e8e8e4 !important;
+}
+
+html body #segunda :is(h1,h2,h3,h4,p,span,a,button,label,strong,small,li,td,th),
+html body #investimentos :is(h1,h2,h3,h4,p,span,a,button,label,strong,small,li,td,th),
+html body #exchange :is(h1,h2,h3,h4,p,span,a,button,label,strong,small,li,td,th),
+html body #rcc :is(h1,h2,h3,h4,p,span,a,button,label,strong,small,li,td,th),
+html body #contato :is(h1,h2,h3,h4,p,span,a,button,label,strong,small,li,td,th),
+html body #blockchain :is(h1,h2,h3,h4,p,span,a,button,label,strong,small,li,td,th),
+html body #carteira :is(h1,h2,h3,h4,p,span,a,button,label,strong,small,li,td,th),
+html body #relogios-mundo :is(span,p,strong,small) {
+  background-image: none !important;
+  background-clip: border-box !important;
+  -webkit-background-clip: border-box !important;
+  -webkit-text-stroke: 0 !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,.9) !important;
+}
+
+/* TEXTO DOS BOTOES */
+html body #segunda .botao-menu,
+html body .tela .voltar,
+html body .tela a.voltar,
+html body .tela button.voltar,
+html body .tela .carteira-link {
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-weight: 700 !important;
+  color: #e8e8e4 !important;
+  -webkit-text-fill-color: #e8e8e4 !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,.9) !important;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,.12),
+              inset 0 -3px 5px rgba(0,0,0,.9),
+              0 2px 5px rgba(0,0,0,.8) !important;
+}
+
+/* CONTORNOS BRANCO FOSCO / PRATA */
+html body #segunda .botao-menu::before,
+html body .tela .voltar::before,
+html body .tela a.voltar::before,
+html body .tela button.voltar::before,
+html body .tela .carteira-link::before {
+  background: linear-gradient(135deg,
+    #777873 0%, #d8d8d2 25%, #f2f2ed 42%,
+    #a9aaa5 60%, #eeeeea 78%, #777873 100%) !important;
+  filter: none !important;
+}
+
+/* ON LINE E INDICADORES FINANCEIROS CONTINUAM VERDES */
+html body #carteira .carteira-status,
+html body #carteira .carteira-status span,
+html body #carteira .carteira-ponto {
+  color: #42e889 !important;
+  -webkit-text-fill-color: #42e889 !important;
+  text-shadow: 0 0 5px rgba(66,232,137,.35) !important;
+}
+/* FIM DO PADRAO FINAL */
 
 </style>
 </head>
