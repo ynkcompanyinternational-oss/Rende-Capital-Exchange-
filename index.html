@@ -1326,6 +1326,107 @@ html body #carteira .carteira-status * {
 }
 /* FIM IDENTIDADE PREMIUM BRANCO FOSCO */
 
+
+/* AJUSTES TELA INICIAL E RELOGIOS */
+html body #inicio {
+  background-size: 100% 100% !important;
+  background-position: center center !important;
+}
+
+html body #inicio .menu-botao {
+  width: 64px !important;
+  height: 54px !important;
+  gap: 6px !important;
+}
+
+html body #inicio .menu-botao span {
+  width: 35px !important;
+  height: 4px !important;
+  background: #e8e8e4 !important;
+  border: none !important;
+  border-radius: 5px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,.8) !important;
+}
+
+html body #inicio .menu-botao::after {
+  content: "MENU";
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%);
+  color: #e8e8e4 !important;
+  -webkit-text-fill-color: #e8e8e4 !important;
+  font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif !important;
+  font-size: 9px !important;
+  font-weight: 600 !important;
+  letter-spacing: 2px !important;
+  text-shadow: 0 1px 3px #000 !important;
+}
+
+html body #segunda #relogios-mundo {
+  bottom: 15% !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+/* FIM AJUSTES TELA INICIAL E RELOGIOS */
+
+
+/* AJUSTES VISUAIS DA CARTEIRA */
+html body #carteira .voltar {
+  border: 1.5px solid #e8e8e4 !important;
+}
+html body #carteira .voltar::before {
+  background: linear-gradient(135deg,
+    #777873 0%, #d8d8d2 25%, #f2f2ed 42%,
+    #a9aaa5 60%, #eeeeea 78%, #777873 100%) !important;
+}
+html body #carteira .carteira-ativos {
+  padding: 4px 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body #carteira .carteira-linha {
+  grid-template-columns: .75fr 1.25fr !important;
+  gap: 7px !important;
+  padding: 14px 3px !important;
+  font-size: 13px !important;
+  border-bottom: 1px solid rgba(232,232,228,.35) !important;
+}
+html body #carteira .carteira-linha:not(.carteira-cabecalho) {
+  font-size: 14px !important;
+}
+html body #carteira .carteira-cabecalho {
+  font-size: 10px !important;
+}
+html body #carteira .carteira-linha span {
+  white-space: nowrap !important;
+}
+/* FIM DOS AJUSTES VISUAIS DA CARTEIRA */
+
+
+/* ACABAMENTO BRANCO FOSCO DO PATRIMONIO */
+html body #carteira .patrimonio-painel {
+  border: 1.5px solid #d8d8d2 !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.12),
+    0 0 8px rgba(220,220,215,.16) !important;
+}
+/* FIM DO ACABAMENTO */
+
+
+/* CARTEIRA: CONTEUDO DIRETO SOBRE O FUNDO */
+html body #carteira .carteira-painel,
+html body #carteira .carteira-ativos,
+html body #carteira .carteira-endereco {
+  background: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
 </style>
 </head>
 
@@ -1512,18 +1613,7 @@ html body #carteira .carteira-status * {
     </div>
 
     <div class="carteira-movimentos">
-      <div class="carteira-painel">
-        <span class="carteira-legenda">TOTAL DE ATIVOS</span>
-        <strong class="carteira-dado" id="total-ativos">Consultando...</strong>
-      </div>
-      <div class="carteira-painel">
-        <span class="carteira-legenda">VALOR DOS ATIVOS</span>
-        <strong class="carteira-dado" id="valor-ativos">Consultando...</strong>
-      </div>
-      <div class="carteira-painel">
-        <span class="carteira-legenda">TOTAL DE TRANSAÇÕES</span>
-        <strong class="carteira-dado" id="total-transacoes">Consultando...</strong>
-      </div>
+
       <div class="carteira-painel">
         <span class="carteira-legenda">ENVIADAS</span>
         <strong class="carteira-dado" id="volume-enviado">Consultando...</strong>
@@ -1539,23 +1629,19 @@ html body #carteira .carteira-status * {
       <div class="carteira-tabela">
         <div class="carteira-linha carteira-cabecalho">
           <span>ATIVO</span>
-          <span>QUANTIDADE</span>
-          <span>VALOR</span>
+          <span>QUANTIDADE DISPONÍVEL</span>
         </div>
         <div class="carteira-linha">
           <span>ETH</span>
           <span id="saldo-eth">Consultando...</span>
-          <span id="valor-eth">Aguardando cotação</span>
         </div>
         <div class="carteira-linha">
           <span>Tether USDT</span>
           <span id="saldo-usdt">Aguardando consulta</span>
-          <span id="valor-usdt">Aguardando cotação</span>
         </div>
         <div class="carteira-linha">
           <span>WETH</span>
           <span id="saldo-weth">Aguardando consulta</span>
-          <span id="valor-weth">Aguardando cotação</span>
         </div>
       </div>
     </div>
@@ -1624,21 +1710,39 @@ function voltarMenuContato() {
   document.getElementById("segunda").style.display = "block";
 }
 
+let carteiraConsultaEmAndamento = false;
+let carteiraTemDados = false;
+let carteiraTemporizador = null;
+
 function abrirCarteira() {
   document.getElementById("segunda").style.display = "none";
   document.getElementById("carteira").style.display = "block";
+
   atualizarCarteira();
+
+  if (carteiraTemporizador === null) {
+    carteiraTemporizador = setInterval(() => {
+      if (document.getElementById("carteira").style.display !== "none") {
+        atualizarCarteira();
+      }
+    }, 30000);
+  }
 }
 
 function voltarMenuCarteira() {
   document.getElementById("carteira").style.display = "none";
   document.getElementById("segunda").style.display = "block";
+
+  if (carteiraTemporizador !== null) {
+    clearInterval(carteiraTemporizador);
+    carteiraTemporizador = null;
+  }
 }
 
 
 
 
-async function atualizarCarteira() {
+async function consultarCarteiraUmaVez() {
   const el = id => document.getElementById(id);
 
   const numero = n => Number(n).toLocaleString("pt-BR", {
@@ -1646,9 +1750,9 @@ async function atualizarCarteira() {
     maximumFractionDigits: 2
   });
 
-  const quantidade = (n, casas = 8) => Number(n).toLocaleString("pt-BR", {
+  const quantidade = n => Number(n).toLocaleString("pt-BR", {
     minimumFractionDigits: 2,
-    maximumFractionDigits: casas
+    maximumFractionDigits: 2
   });
 
   const moeda = n => "R$ " + numero(n);
@@ -1656,12 +1760,20 @@ async function atualizarCarteira() {
   try {
     el("carteira-status-texto").textContent = "CONSULTANDO ETHEREUM...";
 
-    const resposta = await fetch(
-      "https://rende-capital-exchange-1.onrender.com/api/portfolio",
-      { cache: "no-store" }
-    );
+    const controlador = new AbortController();
+    const limiteConsulta = setTimeout(() => controlador.abort(), 90000);
+    let resposta;
+    let dados;
 
-    const dados = await resposta.json();
+    try {
+      resposta = await fetch(
+        "https://rende-capital-exchange-1.onrender.com/api/portfolio",
+        { cache: "no-store", signal: controlador.signal }
+      );
+      dados = await resposta.json();
+    } finally {
+      clearTimeout(limiteConsulta);
+    }
 
     if (!resposta.ok || !dados.ok) {
       throw new Error(dados.error || "Falha na consulta da API");
@@ -1679,9 +1791,9 @@ async function atualizarCarteira() {
     const weth = Number(BigInt(validar(d.weth_balance, "WETH"))) / 1e18;
     const usdt = Number(BigInt(validar(d.usdt_balance, "USDT"))) / 1e6;
 
-    el("saldo-eth").textContent = quantidade(eth) + " ETH";
-    el("saldo-weth").textContent = quantidade(weth) + " WETH";
-    el("saldo-usdt").textContent = quantidade(usdt, 6) + " USDT";
+    el("saldo-eth").textContent = quantidade(eth);
+    el("saldo-weth").textContent = quantidade(weth);
+    el("saldo-usdt").textContent = quantidade(usdt);
 
     const precos = d.prices;
     const cotacoesOk = !!precos &&
@@ -1700,18 +1812,9 @@ async function atualizarCarteira() {
       const valorUsdt = usdt * Number(precos.usdt_brl);
       patrimonio = valorEth + valorWeth + valorUsdt;
 
-      el("valor-eth").textContent = moeda(valorEth);
-      el("valor-weth").textContent = moeda(valorWeth);
-      el("valor-usdt").textContent = moeda(valorUsdt);
       el("patrimonio-total").textContent = moeda(patrimonio);
-      el("valor-ativos").textContent = moeda(patrimonio);
     } else {
-      for (const id of [
-        "valor-eth", "valor-weth", "valor-usdt",
-        "patrimonio-total", "valor-ativos"
-      ]) {
-        el(id).textContent = "Cotação indisponível";
-      }
+      el("patrimonio-total").textContent = "Cotação indisponível";
     }
 
     const endereco = String(dados.address || "").toLowerCase();
@@ -1754,25 +1857,55 @@ async function atualizarCarteira() {
       }
     }
 
-    const totalAtivos = [eth, weth, usdt].filter(valor => valor > 0).length;
-
-    el("total-ativos").textContent = String(totalAtivos);
-    el("total-transacoes").textContent = String(todasTransacoes.size);
     el("volume-enviado").textContent = String(enviadas.size);
     el("volume-recebido").textContent = String(recebidas.size);
 
+    carteiraTemDados = true;
     el("carteira-status-texto").textContent = cotacoesOk ? "ONLINE" : "ONLINE — COTAÇÃO INDISPONÍVEL";
 
   } catch (erro) {
-    el("carteira-status-texto").textContent = "ERRO: " + String(erro?.message || erro).slice(0, 100);
-    for (const id of [
-      "saldo-eth", "saldo-weth", "saldo-usdt",
-      "valor-eth", "valor-weth", "valor-usdt",
-      "patrimonio-total", "total-ativos", "valor-ativos", "total-transacoes", "volume-enviado", "volume-recebido"
-    ]) {
-      el(id).textContent = "Indisponível";
+    if (!carteiraTemDados) {
+      el("carteira-status-texto").textContent = "AGUARDANDO CONEXÃO...";
+      for (const id of [
+        "saldo-eth", "saldo-weth", "saldo-usdt",
+        "patrimonio-total", "volume-enviado", "volume-recebido"
+      ]) {
+        el(id).textContent = "Aguardando conexão";
+      }
     }
     console.error("RENDE CAPITAL:", erro);
+    throw erro;
+  }
+}
+
+async function atualizarCarteira() {
+  if (carteiraConsultaEmAndamento) return;
+
+  carteiraConsultaEmAndamento = true;
+  const pausas = [1500, 4000, 8000];
+
+  try {
+    for (let tentativa = 0; tentativa < 4; tentativa++) {
+      try {
+        await consultarCarteiraUmaVez();
+        return;
+      } catch (erro) {
+        console.error("Tentativa " + (tentativa + 1) + " da carteira:", erro);
+
+        if (tentativa === 3) {
+          document.getElementById("carteira-status-texto").textContent =
+            carteiraTemDados ? "ONLINE — FALHA NA ATUALIZAÇÃO" : "SEM CONEXÃO — NOVA TENTATIVA EM BREVE";
+          return;
+        }
+
+        document.getElementById("carteira-status-texto").textContent =
+          "RECONECTANDO... " + (tentativa + 2) + "/4";
+
+        await new Promise(resolve => setTimeout(resolve, pausas[tentativa]));
+      }
+    }
+  } finally {
+    carteiraConsultaEmAndamento = false;
   }
 }
 

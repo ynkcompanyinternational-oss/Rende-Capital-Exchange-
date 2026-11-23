@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parent
 ENV_FILE = Path.home() / ".config" / "rende-capital" / ".env"
 API_URL = "https://api.etherscan.io/v2/api"
 ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+PRICE_CACHE = None
 
 def load_api_key():
     key = os.environ.get("ETHERSCAN_API_KEY", "").strip()
@@ -111,35 +112,37 @@ class Handler(SimpleHTTPRequestHandler):
                 with urlopen(req, timeout=25) as response:
                     results[name] = json.loads(response.read().decode())
 
+            global PRICE_CACHE
             try:
-                price_url = "https://api.coingecko.com/api/v3/simple/price?ids=ethereum,tether&vs_currencies=brl"
-                with urlopen(price_url, timeout=15) as response:
-                    prices = json.loads(response.read().decode())
-                eth_brl = prices["ethereum"]["brl"]
-                usdt_brl = prices["tether"]["brl"]
-                price_source = "CoinGecko"
-            except Exception:
-                try:
-                    def binance_price(symbol):
-                        url = f"https://api.binance.com/api/v3/ticker/price?symbol={symbol}"
-                        req = Request(url, headers={"User-Agent": "RendeCapital/1.0"})
-                        with urlopen(req, timeout=15) as response:
-                            return float(json.loads(response.read().decode())["price"])
+                def coinbase_price(pair):
+                    url = f"https://api.coinbase.com/v2/prices/{pair}/spot"
+                    req = Request(url, headers={"User-Agent": "RendeCapital/1.0"})
+                    with urlopen(req, timeout=15) as response:
+                        data = json.loads(response.read().decode())
+                    return float(data["data"]["amount"])
 
-                    eth_brl = binance_price("ETHBRL")
-                    usdt_brl = binance_price("USDTBRL")
-                    price_source = "Binance"
-                except Exception as price_error:
-                    results["prices"] = {"error": str(price_error)}
-                    eth_brl = usdt_brl = None
+                eth_brl = coinbase_price("ETH-BRL")
+                usdt_brl = coinbase_price("USDT-BRL")
 
-            if eth_brl is not None and usdt_brl is not None:
-                results["prices"] = {
+                PRICE_CACHE = {
                     "eth_brl": eth_brl,
                     "weth_brl": eth_brl,
-                    "usdt_brl": usdt_brl,
-                    "source": price_source
+                    "usdt_brl": usdt_brl
                 }
+                results["prices"] = {
+                    **PRICE_CACHE,
+                    "source": "Coinbase"
+                }
+
+            except Exception as price_error:
+                if PRICE_CACHE is not None:
+                    results["prices"] = {
+                        **PRICE_CACHE,
+                        "source": "Coinbase — última cotação válida",
+                        "warning": str(price_error)
+                    }
+                else:
+                    results["prices"] = {"error": str(price_error)}
 
             self.send_json({
                 "ok": True,
